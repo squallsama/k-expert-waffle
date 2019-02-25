@@ -1,0 +1,37 @@
+server:
+  port: 8080
+
+blog:
+  title: Blog
+  banner:
+    title: Warning
+    content: The blog will be down tomorrow.
+
+spring:
+  mustache:
+    expose-request-attributes: true
+    
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.H2Dialect
+
+  h2:
+    console:
+      enabled: true
+      path: /h2_console
+
+  profiles:
+    active: local
+  #DB properties:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:/Users/DXT889I/Work/Sources/SimpleWebS/h2_database;DB_CLOSE_ON_EXIT=FALSE;DB_CLOSE_DELAY=-1;
+    username: sa
+    password: sa
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG

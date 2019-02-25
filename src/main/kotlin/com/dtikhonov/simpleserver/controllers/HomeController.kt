@@ -3,7 +3,7 @@ package com.dtikhonov.simpleserver.controllers
 import com.dtikhonov.simpleserver.config.BlogProperties
 import com.dtikhonov.simpleserver.extensions.format
 import com.dtikhonov.simpleserver.models.Article
-import com.dtikhonov.simpleserver.models.User
+import com.dtikhonov.simpleserver.models.Person
 import com.dtikhonov.simpleserver.repositories.ArticleRepository
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -48,6 +48,6 @@ class HomeController(private val repository: ArticleRepository,
         val title: String,
         val headline: String,
         val content: String,
-        val author: User,
+        val author: Person,
         val addedAt: String)
 }

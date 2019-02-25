@@ -1,0 +1,34 @@
+server:
+  port: 8080
+
+blog:
+  title: Blog
+  banner:
+    title: Warning
+    content: The blog will be down tomorrow.
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+
+  mustache:
+    expose-request-attributes: true
+
+  h2:
+    console:
+      enabled: true
+
+  profiles:
+    active: local
+  #DB properties:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    username: sa
+    password: sa
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG

@@ -28,5 +28,5 @@ class UserController(private val repository: UserRepository) {
     fun findAll() = repository.findAll()
 
     @GetMapping("/{login}")
-    fun findOne(@PathVariable login: String) = repository.findByLogin(login)
+    fun findOne(@PathVariable login: String) = repository.findByUsername(login)
 }

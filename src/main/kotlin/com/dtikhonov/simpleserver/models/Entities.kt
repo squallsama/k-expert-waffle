@@ -1,44 +1,66 @@
 package com.dtikhonov.simpleserver.models
 
 import com.dtikhonov.simpleserver.extensions.toSlug
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.annotation.JsonManagedReference
 import java.time.LocalDateTime
-import javax.persistence.Entity
+import javax.persistence.*
+import javax.persistence.ManyToMany
 import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToOne
+
+enum class RoleType(val roleName: String) {
+    ANONYM("ANONYM"), USER("USER"), ADMIN("ADMIN")
+}
+
 
 @Entity
 class Article(
     var title: String,
     var headline: String,
     var content: String,
-    @ManyToOne var author: User,
+    @JsonManagedReference
+    @ManyToOne var author: Person,
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),
     @Id @GeneratedValue var id: Long? = null)
 
 @Entity
-class User(
-    var login: String,
-    var firstname: String,
-    var lastname: String,
-    var description: String? = null,
-    @Id @GeneratedValue var id: Long? = null)
+@Table(name = "user")
+class Person(
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
+    var id: Long ? = null,
+
+    var username: String,
+
+    var email: String,
+
+    var password: String,
+    
+    @Transient
+    var passwordConfirm: String,
+    
+    @OneToMany
+    @JsonManagedReference
+    @JsonIgnoreProperties("roles")
+    var roles: MutableSet<Role>
+)
 
 
 @Entity
-class Place(
-    var name: String,
-    var position: String,
-    var type: String,
-    var description: String? = null,
-    @Id @GeneratedValue var id: Long? = null)
-
-
-@Entity
-class Event(
-    var name: String,
-    var position: String,
-    var type: String,
-    var description: String? = null,
-    @Id @GeneratedValue var id: Long? = null)
+@Table(name = "role")
+class Role(
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long ? = null,
+    
+    var roleType: RoleType,
+    
+    var roleDescription: String ? = null,
+    
+    @ManyToMany(mappedBy = "roles")
+    @JsonManagedReference
+    @JsonIgnoreProperties("users")
+    var users: MutableSet<Person>? = null
+)
