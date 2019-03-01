@@ -2,29 +2,31 @@ package com.dtikhonov.simpleserver.services
 
 
 import com.dtikhonov.simpleserver.repositories.UserRepository
-import org.springframework.beans.factory.annotation.Autowired
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 
 @Service
-class UserDetailsServiceImpl : UserDetailsService {
-    @Autowired
-    private val userRepository: UserRepository? = null
+class UserDetailsServiceImpl(private val userRepository: UserRepository) : UserDetailsService {
+
+    private val log = LoggerFactory.getLogger(UserDetailsServiceImpl::class.java)
 
     @Transactional(readOnly = true)
     override fun loadUserByUsername(username: String): UserDetails {
-        val person = userRepository?.findByUsername(username) ?: throw UsernameNotFoundException("User $username not found!")
+        val person = userRepository.findByUsername(username)
         val grantedAuthorities = HashSet<GrantedAuthority>()
-        for (role in person.roles) {
-            grantedAuthorities.add(SimpleGrantedAuthority
-                (role.roleType.roleName))
+        person.roles.forEach {
+            run {
+                val roleName = it.roleType.roleName
+                log.info("Authority $roleName, was granted for $username")
+                grantedAuthorities.add(SimpleGrantedAuthority(roleName))
+            }
         }
 
         return User(

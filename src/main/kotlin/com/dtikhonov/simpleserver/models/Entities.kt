@@ -1,6 +1,7 @@
 package com.dtikhonov.simpleserver.models
 
 import com.dtikhonov.simpleserver.extensions.toSlug
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonManagedReference
 import java.time.LocalDateTime
@@ -15,10 +16,10 @@ enum class RoleType(val roleName: String) {
 
 @Entity
 class Article(
+    @Column(unique=true)
     var title: String,
     var headline: String,
     var content: String,
-    @JsonManagedReference
     @ManyToOne var author: Person,
     var slug: String = title.toSlug(),
     var addedAt: LocalDateTime = LocalDateTime.now(),
@@ -32,18 +33,21 @@ class Person(
     @Column(name = "user_id")
     var id: Long ? = null,
 
+    @Column(unique=true)
     var username: String,
 
+    @Column(unique=true)
     var email: String,
 
+    @JsonIgnore
     var password: String,
     
     @Transient
+    @JsonIgnore
     var passwordConfirm: String,
     
-    @OneToMany
-    @JsonManagedReference
-    @JsonIgnoreProperties("roles")
+    @ManyToMany
+    @JsonIgnore
     var roles: MutableSet<Role>
 )
 
@@ -54,13 +58,13 @@ class Role(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     var id: Long ? = null,
-    
+
+    @Column(unique=true)
     var roleType: RoleType,
     
     var roleDescription: String ? = null,
     
     @ManyToMany(mappedBy = "roles")
-    @JsonManagedReference
-    @JsonIgnoreProperties("users")
+    @JsonIgnore
     var users: MutableSet<Person>? = null
 )

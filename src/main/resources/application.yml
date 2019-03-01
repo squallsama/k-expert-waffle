@@ -1,5 +1,11 @@
 server:
   port: 8080
+  
+credentials:
+  admin:
+    pass: superpass
+  test-user:
+    pass: testpass
 
 blog:
   title: Blog

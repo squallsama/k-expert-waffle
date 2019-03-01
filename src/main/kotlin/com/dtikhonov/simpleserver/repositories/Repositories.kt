@@ -23,5 +23,5 @@ interface UserRepository : CrudRepository<Person, Long> {
 @Repository
 interface RoleRepository : CrudRepository<Role, Long> {
     fun findByRoleType(roleType: RoleType): Role
-    fun removeByRoleType(roleType: RoleType) : List<Role>
+    fun deleteByRoleType(roleType: RoleType) : List<Role>
 }

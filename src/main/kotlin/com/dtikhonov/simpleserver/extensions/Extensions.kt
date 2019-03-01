@@ -4,6 +4,9 @@ import java.time.LocalDateTime
 import java.time.format.DateTimeFormatterBuilder
 import java.time.temporal.ChronoField
 import java.util.*
+import java.util.logging.Logger
+import kotlin.reflect.KClass
+import kotlin.reflect.full.companionObject
 
 fun LocalDateTime.format() = this.format(englishDateFormatter)
 
@@ -31,3 +34,20 @@ fun String.toSlug() = toLowerCase()
     .split(" ")
     .joinToString("-")
     .replace("-+".toRegex(), "-")
+
+// Return logger for Java class, if companion object fix the name
+fun <T: Any> logger(forClass: Class<T>): Logger {
+    return Logger.getLogger(unwrapCompanionClass(forClass).name)
+}
+
+// unwrap companion class to enclosing class given a Java Class
+fun <T : Any> unwrapCompanionClass(ofClass: Class<T>): Class<*> {
+    return ofClass.enclosingClass?.takeIf {
+        ofClass.enclosingClass.kotlin.companionObject?.java == ofClass
+    } ?: ofClass
+}
+
+// return logger from extended class (or the enclosing class)
+fun <T: Any> T.logger(): Logger {
+    return logger(this.javaClass)
+}
